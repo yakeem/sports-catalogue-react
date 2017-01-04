@@ -2,9 +2,18 @@ import React, {Component} from 'react';
 import './App.css';
 
 class SearchBar extends Component {
+    constructor(props){
+      super(props);
+      this.handleInput = this.handleInput.bind(this);
+    }
+
+    handleInput(){
+      this.props.onFilterChange(this.filterText.value);
+    }
+
     render() {
         return (
-            <input></input>
+            <input ref={ (input) => this.filterText = input} onChange={this.handleInput} value={this.props.filterValue}></input>
         );
     }
 }
@@ -13,7 +22,10 @@ class ProductRow extends Component {
 
     render() {
         return (
-            <div></div>
+            <p>
+                {this.props.product.name}: {this.props.product.price}
+            </p>
+
         );
     }
 
@@ -24,15 +36,23 @@ class CategoryWithProducts extends Component {
         var rows = [];
 
         for (let i = 0; i < this.props.products.length; ++i) {
-            rows.push(<ProductRow product={this.props.products[i]}/>);
+            let prod = this.props.products[i];
+            if(prod.name.includes(this.props.filterValue)){
+              rows.push(<ProductRow key={prod.name} product={prod}/>);
+            }
         }
 
         return (
             <tr>
-                <td colSpan="2">
-                    <h2>{this.props.category}</h2>
+                <td>
+                    <h2>{this.props.category}:</h2>
+                </td>
+                <td>
+                {rows}
                 </td>
             </tr>
+
+
         );
     }
 }
@@ -58,7 +78,7 @@ class ResultsTable extends Component {
             if (categoryProducts.hasOwnProperty(category)) {
 
                 tableRows.push(
-                    <CategoryWithProducts key={category} category={category} products={categoryProducts[category]}></CategoryWithProducts>
+                    <CategoryWithProducts filterValue={this.props.filterValue} key={category} category={category} products={categoryProducts[category]}></CategoryWithProducts>
                 );
 
             }
@@ -91,11 +111,21 @@ class ResultsTable extends Component {
 }
 
 class ProductsTable extends Component {
+    constructor(props){
+      super(props);
+      this.state = {filterValue: ''};
+      this.handleFilterChange = this.handleFilterChange.bind(this);
+    }
+
+    handleFilterChange(newValue){
+      this.setState({filterValue: newValue})
+    }
+
     render() {
         return (
             <div>
-                <SearchBar></SearchBar>
-                <ResultsTable products={this.props.products}/>
+                <SearchBar filterValue={this.state.filterValue} onFilterChange={this.handleFilterChange}></SearchBar>
+                <ResultsTable filterValue={this.state.filterValue} products={this.props.products}/>
             </div>
         );
     }
