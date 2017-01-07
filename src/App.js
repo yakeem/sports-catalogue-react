@@ -13,8 +13,11 @@ class SearchBar extends Component {
 
     render() {
         return (
-            <input ref={ (input) => this.filterText = input} onChange={this.handleInput} value={this.props.filterValue}></input>
-        );
+          <form className="form-group">
+            <label htmlFor="searchBar1">Filter results:</label>
+            <input id="searchBar1" className="form-control" ref={ (input) => this.filterText = input} onChange={this.handleInput} value={this.props.filterValue}></input>
+          </form>
+      );
     }
 }
 
@@ -86,7 +89,7 @@ class ResultsTable extends Component {
         }
 
         return (
-            <table>
+            <table className="table table-bordered table-striped">
                 <thead>
                   <tr>
                     <th>
@@ -125,11 +128,43 @@ class ProductsTable extends Component {
         return (
             <div>
                 <SearchBar filterValue={this.state.filterValue} onFilterChange={this.handleFilterChange}></SearchBar>
+                <div className="row">
+                  <br />
+                </div>
                 <ResultsTable filterValue={this.state.filterValue} products={this.props.products}/>
             </div>
         );
     }
 }
+
+class MaintenancePane extends Component {
+    render() {
+        return (
+            <div id="myModal" className="modal fade" tabIndex="-1" role="dialog">
+                <div className="modal-dialog" role="document">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 className="modal-title">Modal title</h4>
+                        </div>
+                        <div className="modal-body">
+                            <p>One fine body&hellip;</p>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" className="btn btn-primary">Save changes</button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+          );
+      }
+    }
+
 
 var PRODUCTS = [
     {
@@ -169,9 +204,17 @@ class App extends Component {
 
     render() {
         return (
-            <div>
+          <div>
+            <div className="products">
                 <ProductsTable products={PRODUCTS}/>
             </div>
+            <div>
+                <MaintenancePane />
+                  <button type="button" className="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+                    Launch demo modal
+                  </button>
+            </div>
+          </div>
         );
     }
 }
